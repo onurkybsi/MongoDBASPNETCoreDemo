@@ -1,0 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Core.Entity;
+using MongoDB.Driver;
+
+namespace Core.DataAccess
+{
+    public class MongoDBDriverRepositoryBase<TEntity, TRepositorySettings> : IEntityRepository<TEntity>
+        where TEntity : class, IEntity, new()
+        where TRepositorySettings : IRepositorySettings // Are you sure about not using class, new ()?
+    {
+        private readonly IMongoClient _mongoClient;
+        private readonly IMongoDatabase _database;
+        private readonly IMongoCollection<TEntity> _collection;
+
+
+        public MongoDBDriverRepositoryBase(TRepositorySettings repositorySettings)
+        {
+            _mongoClient = new MongoClient(repositorySettings.ConnectionString);
+            _database = _mongoClient.GetDatabase(repositorySettings.DatabaseName);
+            _collection = _database.GetCollection<TEntity>(repositorySettings.CollectionName);
+        }
+
+        public List<TEntity> GetList(Expression<Func<TEntity, bool>> filter = null)
+            => filter is null ? _collection.Find(document => true).ToList() : _collection.Find(new ExpressionFilterDefinition<TEntity>(filter)).ToList();
+    }
+}
