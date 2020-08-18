@@ -4,7 +4,7 @@ using Entity.Concrete;
 
 namespace DataAccess.Abstract.PersonRepo
 {
-    public class PersonRepository : MongoDBDriverRepositoryBase<Person, IPersonRepositorySettings>, IPersonRepository
+    public class PersonRepository : MongoDBDriverRepositoryBase<Person>, IPersonRepository
     {
         public PersonRepository(IPersonRepositorySettings repositorySettings) : base(repositorySettings)
         { }

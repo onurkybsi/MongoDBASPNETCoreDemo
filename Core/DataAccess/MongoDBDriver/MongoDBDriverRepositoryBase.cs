@@ -6,16 +6,15 @@ using MongoDB.Driver;
 
 namespace Core.DataAccess
 {
-    public class MongoDBDriverRepositoryBase<TEntity, TRepositorySettings> : IEntityRepository<TEntity>
+    public class MongoDBDriverRepositoryBase<TEntity> : IEntityRepository<TEntity>
         where TEntity : class, IEntity, new()
-        where TRepositorySettings : IRepositorySettings // Are you sure about not using class, new ()?
     {
         private readonly IMongoClient _mongoClient;
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<TEntity> _collection;
 
 
-        public MongoDBDriverRepositoryBase(TRepositorySettings repositorySettings)
+        public MongoDBDriverRepositoryBase(IRepositorySettings repositorySettings)
         {
             _mongoClient = new MongoClient(repositorySettings.ConnectionString);
             _database = _mongoClient.GetDatabase(repositorySettings.DatabaseName);
